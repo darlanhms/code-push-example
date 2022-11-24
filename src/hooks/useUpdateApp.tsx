@@ -34,11 +34,21 @@ export const UpdateAppProvider: React.FC<React.PropsWithChildren> = ({
   const [isUpdating, setIsUpdating] = useState(false);
   const [status, setStatus] = useState<CodePush.SyncStatus>();
   const [download, setDownload] = useState<DownloadState>();
-  const [version, setVersion] = useState<string>('0');
+  const [version, setVersion] = useState<string>('v0');
 
   const sync = useCallback(() => {
     CodePush.sync(
-      {},
+      {
+        installMode: CodePush.InstallMode.IMMEDIATE,
+        updateDialog: {
+          title: 'Atualização',
+          mandatoryUpdateMessage: 'Uma atualização obrigatória é necessária',
+          mandatoryContinueButtonLabel: 'Atualizar',
+          optionalUpdateMessage: 'Uma atualização opcional está disponível',
+          optionalIgnoreButtonLabel: 'Ignorar',
+          optionalInstallButtonLabel: 'Instalar',
+        },
+      },
       newStatus => {
         setStatus(newStatus);
 
@@ -62,7 +72,7 @@ export const UpdateAppProvider: React.FC<React.PropsWithChildren> = ({
   useEffect(() => {
     CodePush.getUpdateMetadata().then(pkg => {
       if (pkg) {
-        setVersion(pkg?.appVersion);
+        setVersion(pkg?.label);
       }
     });
   }, []);
