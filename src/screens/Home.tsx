@@ -1,13 +1,23 @@
 import React, {useEffect} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
+import type {NativeStackScreenProps} from '@react-navigation/native-stack';
 import useUpdateApp from '../hooks/useUpdateApp';
+import {StackParamList} from '../router';
 
-export const HomeScreen: React.FC = () => {
-  const {sync, version, status} = useUpdateApp();
+type HomeScreenProps = NativeStackScreenProps<StackParamList, 'Home'>;
+
+export const HomeScreen: React.FC<HomeScreenProps> = ({navigation}) => {
+  const {sync, version, status, isUpdating} = useUpdateApp();
 
   useEffect(() => {
     sync();
   }, [sync]);
+
+  useEffect(() => {
+    if (isUpdating) {
+      navigation.navigate('Download');
+    }
+  }, [isUpdating, navigation]);
 
   return (
     <View style={styles.container}>
