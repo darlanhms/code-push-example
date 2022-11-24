@@ -1,24 +1,24 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import CodePush, {CodePushOptions} from 'react-native-code-push';
+import {UpdateAppProvider} from './hooks/useUpdateApp';
+import {Router} from './router';
+
+const codePushConfig: CodePushOptions = {
+  checkFrequency: CodePush.CheckFrequency.MANUAL,
+  installMode: CodePush.InstallMode.IMMEDIATE,
+  updateDialog: {
+    mandatoryUpdateMessage: 'Uma atualização está pronta',
+    mandatoryContinueButtonLabel: 'Atualizar',
+    title: 'Atualização',
+  },
+};
 
 const App: React.FC = () => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.text}>Olá, Mundo!</Text>
-    </View>
+    <UpdateAppProvider>
+      <Router />
+    </UpdateAppProvider>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  text: {
-    fontSize: 20,
-  },
-});
-
-export default App;
+export default CodePush(codePushConfig)(App);
